@@ -67,7 +67,9 @@ jobs:
           - ubuntu-24.04-arm
           - macos-latest
           - windows-latest
-          - windows-11-arm
+          # Not windows-11-arm: aarch64-pc-windows-msvc writes coverage profiles
+          # llvm-profdata rejects (rust-lang/rust#150123). Its tests still run
+          # in the job above.
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4

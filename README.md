@@ -30,6 +30,9 @@ Anything else fails to compile.
 
 CI runs the whole suite on every platform listed, debug and release, and fails
 any platform whose coverage drops below 100% of functions, lines and regions.
+Windows on aarch64 is the one platform whose coverage is not measured: the
+compiler writes profiles there that LLVM cannot read
+([rust-lang/rust#150123](https://github.com/rust-lang/rust/issues/150123)).
 
 A waiter is measured asleep, not assumed: the CPU time the operating system
 charges a thread that waits half a second for the lock stays under a tenth of
