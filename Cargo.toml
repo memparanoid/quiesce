@@ -1,0 +1,12 @@
+[package]
+name = "quiesce"
+version = "0.0.1-rc.1"
+edition = "2024"
+rust-version = "1.89"
+description = "A no_std mutex whose waiters sleep in the kernel instead of spinning"
+license = "Apache-2.0"
+repository = "https://github.com/memparanoid/quiesce"
+keywords = ["mutex", "futex", "no_std", "lock", "sync"]
+categories = ["concurrency", "no-std"]
+
+[dependencies]
