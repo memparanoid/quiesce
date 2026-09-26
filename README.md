@@ -51,6 +51,38 @@ not one that sleeps.
 - **Panics survived**: holders panic while they hold the lock, the others go on,
   and the count comes out exact.
 
+## Benchmarks
+
+Measured on a Beelink SER8: AMD Ryzen 7 8745HS (8 cores, 16 threads), 64 GB,
+NixOS 25.05, Linux 6.12, rustc 1.94.1. Against `std::sync::Mutex` and
+`spin::Mutex` 0.12.
+
+`cargo bench --bench mutex`, a lock and an increment of the value it holds:
+
+| | quiesce | std | spin |
+|---|---:|---:|---:|
+| one thread | 3.43 ns | 3.45 ns | 1.71 ns |
+| 2 threads | 37.5 M/s | 35.3 M/s | 71.6 M/s |
+| 4 threads | 25.6 M/s | 21.3 M/s | 43.8 M/s |
+| 16 threads | 46.8 M/s | 33.1 M/s | 9.9 M/s |
+| 64 threads | 45.6 M/s | 32.1 M/s | 10.5 M/s |
+
+`cargo bench --bench waiting`, every thread taking the lock 500 times and
+sleeping 50 µs while it holds it, with the CPU time each thread is charged
+summed:
+
+| lock | threads | wall | CPU charged | cores busy |
+|---|---:|---:|---:|---:|
+| quiesce | 2 | 0.106 s | 0.004 s | 0.04 |
+| std | 2 | 0.108 s | 0.010 s | 0.09 |
+| spin | 2 | 0.105 s | 0.072 s | 0.69 |
+| quiesce | 16 | 0.852 s | 0.056 s | 0.07 |
+| std | 16 | 0.851 s | 0.075 s | 0.09 |
+| spin | 16 | 0.876 s | 8.391 s | 9.58 |
+| quiesce | 64 | 3.420 s | 0.256 s | 0.07 |
+| std | 64 | 3.416 s | 0.338 s | 0.10 |
+| spin | 64 | 4.956 s | 65.487 s | 13.21 |
+
 ## Maintenance
 
 The crate is small and meant to stay that way, so it is not expected to change

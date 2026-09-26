@@ -10,3 +10,15 @@ keywords = ["mutex", "futex", "no_std", "lock", "sync"]
 categories = ["concurrency", "no-std"]
 
 [dependencies]
+
+[dev-dependencies]
+criterion = "0.5"
+spin = "0.12.3"
+
+[[bench]]
+name = "mutex"
+harness = false
+
+[[bench]]
+name = "waiting"
+harness = false
