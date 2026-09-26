@@ -337,7 +337,7 @@ dependencies = [
 
 [[package]]
 name = "quiesce"
-version = "0.0.1-rc.1"
+version = "0.0.1"
 dependencies = [
  "criterion",
  "spin",
