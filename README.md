@@ -1,5 +1,7 @@
 # quiesce
 
+[![CI](https://github.com/memparanoid/quiesce/actions/workflows/ci.yml/badge.svg)](https://github.com/memparanoid/quiesce/actions/workflows/ci.yml)
+
 A `no_std` mutex whose waiters sleep in the kernel instead of spinning.
 
 ```rust
