@@ -51,6 +51,12 @@ not one that sleeps.
 - **Panics survived**: holders panic while they hold the lock, the others go on,
   and the count comes out exact.
 
+## Maintenance
+
+The crate is small and meant to stay that way, so it is not expected to change
+often. A long gap between releases does not mean it is abandoned: it is
+maintained, CI runs on every change, and issues are answered.
+
 ## Credits
 
 The three-state lock is the one Mara Bos builds in *Rust Atomics and Locks*,
