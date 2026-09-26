@@ -24,15 +24,36 @@ is no poisoning: a holder that panics releases the lock on the way out.
 | macOS 14.4 and later | `os_sync_wait_on_address` / `os_sync_wake_by_address_any` |
 | Windows 8 and later | `WaitOnAddress` / `WakeByAddressSingle` |
 
-Anything else fails to compile. Each platform listed runs the whole suite in
-CI, including the test that measures the CPU a waiter is charged while it
-waits.
+Anything else fails to compile.
+
+## Testing
+
+CI runs the whole suite on every platform listed, debug and release, and fails
+any platform whose coverage drops below 100% of functions, lines and regions.
+
+A waiter is measured asleep, not assumed: the CPU time the operating system
+charges a thread that waits half a second for the lock stays under a tenth of
+it. The meter is held to both answers first, charging a thread that spins and
+not one that sleeps.
+
+`tests/concurrency.rs` runs four holders per core against one mutex:
+
+- **One holder inside at a time**, counted by an atomic the mutex never touches.
+- **No update lost** to a read, a yield and a write under the lock.
+- **Every write handed over whole**: a row written in two halves with a yield
+  between them is never seen half written by the next holder.
+- **Every sleeper woken**: holders sleep with the lock held, so the waiters
+  sleep in the kernel and each one needs its wake; a lost one hangs the test
+  until its deadline fails it.
+- **Panics survived**: holders panic while they hold the lock, the others go on,
+  and the count comes out exact.
 
 ## Credits
 
-The three-state lock is the one in Mara Bos's *Rust Atomics and Locks*,
-chapter 9, and in the standard library. Which call to make on each platform
-was learned from [atomic-wait](https://github.com/m-ou-se/atomic-wait).
+The three-state lock is the one Mara Bos builds in *Rust Atomics and Locks*,
+chapter 9, and the one in the standard library. Which call to make on each
+platform was learned from [atomic-wait](https://github.com/m-ou-se/atomic-wait),
+by the same author.
 
 ## License
 

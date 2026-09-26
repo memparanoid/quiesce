@@ -57,3 +57,24 @@ jobs:
         run: cargo nextest run --target ${{ matrix.target }}
       - name: Tests, release
         run: cargo nextest run --release --target ${{ matrix.target }}
+
+  coverage:
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - ubuntu-24.04-arm
+          - macos-latest
+          - windows-latest
+          - windows-11-arm
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: llvm-tools-preview
+      - uses: taiki-e/install-action@nextest
+      - uses: taiki-e/install-action@cargo-llvm-cov
+      - name: Coverage, failing under 100%
+        run: cargo llvm-cov nextest --fail-under-functions 100 --fail-under-lines 100 --fail-under-regions 100
